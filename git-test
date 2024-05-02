@@ -1,0 +1,141 @@
+Create EC2-Instance select ubuntu os
+----------------------
+
+To install git
+-----------------------
+sudo apt-get update
+sudo apt-get install git
+git --version
+mkdir mygit
+cd mygit
+git init
+ls -a
+
+You should see .git directory
+
+Basic git operation
+-------------------------
+
+touch file1.txt file2.txt
+  ls
+  git status
+  git add .
+  git status
+  git rm --cached file1.txt ===>   to unstage
+  git add file1.txt
+  git status
+===========================
+# git restore --staged file4.txt
+========================
+  vi file1.txt 
+add some text and save using escape :wq
+
+  git status
+  touch file3.txt
+  git status
+  git add .
+  git status
+
+  git config user.name user1
+  git config user.email user1@gmail.com
+  git config --list			
+
+  git commit -m "fist commit"
+  git log
+  
+  touch file4.txt
+  git add file4.txt
+  git status
+  git add .
+  git status	
+  git commit -m "2nd commit"
+  git log
+  git log --oneline
+  git log -p -2				#latst 2 commit	--press q to quite - patch
+  git show commitid  			#shows all the files which are commited
+
+
+Git Remove and retore
+----------------------------
+ubuntu@ip-172-31-0-39:~/dev$ git rm file1.txt
+rm 'file1.txt'
+ubuntu@ip-172-31-0-39:~/dev$ ls
+file2.txt
+ubuntu@ip-172-31-0-39:~/dev$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        deleted:    file1.txt
+
+ubuntu@ip-172-31-0-39:~/dev$ git restore --staged file1.txt
+ubuntu@ip-172-31-0-39:~/dev$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    file1.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+ubuntu@ip-172-31-0-39:~/dev$ ls
+file2.txt
+ubuntu@ip-172-31-0-39:~/dev$ git restore  file1.txt
+ubuntu@ip-172-31-0-39:~/dev$ ls
+file1.txt  file2.txt
+ubuntu@ip-172-31-0-39:~/dev$ git status
+
+Adding remote repo to alias
+---------------------------------
+-Create remote repository 
+
+https://github.com
+
+Once you login
+create Personal access token
+Go to setting-from left side select developer setting-click on personal access token- click on create and copy the tone and save it. 
+
+git remote show
+git remote add origin  https://github.com/username/Demorepo.git
+git push origin master       	   #this will ask you username and personal token access key.
+
+
+Creating branch
+------------------
+ git branch				--check the branch
+ git branch demo 			-- create new branch
+ git checkout demo   			-- switch branch
+ git branch
+ git checkout -b project1		--create new branch and swithc directly
+ git branch
+ git branch -a				--shows local and remote branch
+
+Create a new branch named "feature-x":
+git branch feature-x
+
+Switch to the "feature-x" branch:
+git checkout feature-x
+
+Create a new branch and switch to it at the same time:
+git checkout -b feature-x
+
+List all the local branches:
+git branch
+
+List all the branches, including remote branches:
+git branch -a
+
+
+git merge <merging branch name>
+
+Delete a branch named "feature-x":
+git branch -d feature-x
+
+Rename the current branch to "new-feature":
+git branch -m current branch  new-feature
+
+Push a local branch to the remote repository:
+git push -u origin feature-x
+
+Delete a remote branch:
+git push origin --delete feature-x
+
+
