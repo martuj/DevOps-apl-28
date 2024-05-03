@@ -34,6 +34,7 @@ Task 2: Install AWS CLI and Ansible
 sudo apt-get install python3-pip -y
 sudo pip3 install awscli boto boto3 ansible 
 ===============================
+below command is only for ubuntu 24.. version
 sudo apt install python3.12-venv
    32  sudo python3 -m venv myenv
    33  source myenv/bin/activate
