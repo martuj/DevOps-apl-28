@@ -26,8 +26,6 @@ ls
 sudo mv terraform /usr/local/bin
 ls
 terraform -v
-rm rm terraform_1.1.5_linux_amd64.zip
-
 
 Task 2: Install AWS CLI and Ansible
 ===================================
