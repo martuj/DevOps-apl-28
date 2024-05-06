@@ -231,7 +231,6 @@ git --version
 
 # Download the Java code we are going to use in the CICD pipeline
 
-wget files.cloudthat.training/devops/devops-essentials/hello-world-master.zip
 wget https://devops-e-e.s3.ap-south-1.amazonaws.com/hello-world-master.zip
 unzip hello-world-master.zip -d hello-world-master
 ls
