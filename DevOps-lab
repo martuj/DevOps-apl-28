@@ -171,6 +171,12 @@ It will show ip addresses of jenkins server and docker server as below.
 44.202.164.153
 [docker-server]
 34.203.249.54
+example: add the keypaid path also
+[docker-server]
+54.209.238.152    ansible_ssh_private_key_file=/home/ubuntu/devops-labs/mykey
+[jenkins-server]
+34.228.155.75     ansible_ssh_private_key_file=/home/ubuntu/devops-labs/mykey
+
 
 
 # Now ssh into docker-server & jenkins-server and check they are accessible
