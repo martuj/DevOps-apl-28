@@ -1,11 +1,10 @@
 
-ubuntu@CICDLab:~/devops-labs$ ls
-DevOpsServers.tf  mykey  mykey.pub  terraform.tfstate  terraform.tfstate.backup  variables.tf
-ubuntu@CICDLab:~/devops-labs$ pwd
-/home/ubuntu/devops-labs
-ubuntu@CICDLab:~/devops-labs$
-
 # you should be inside the devops-labs directory then you run the following command.
+
+# Create the terraform directory and set up the config files in it
+mkdir devops-labs && cd devops-labs 
+
+# key should be present inside the devops labs dir.
 ssh-keygen -f mykey
 
 ubuntu@CICDLab:~/devops-labs$ cat DevOpsServers.tf
