@@ -1,0 +1,93 @@
+
+ubuntu@CICDLab:~/devops-labs$ ls
+DevOpsServers.tf  mykey  mykey.pub  terraform.tfstate  terraform.tfstate.backup  variables.tf
+ubuntu@CICDLab:~/devops-labs$ pwd
+/home/ubuntu/devops-labs
+ubuntu@CICDLab:~/devops-labs$
+
+# you should be inside the devops-labs directory then you run the following command.
+ssh-keygen -f mykey
+
+ubuntu@CICDLab:~/devops-labs$ cat DevOpsServers.tf
+provider "aws" {
+  region = var.region
+}
+
+/* resource "aws_key_pair" "mykeypair" {
+  key_name   = var.key_name
+  public_key = file(var.public_key)
+} */
+
+resource "aws_key_pair" "mykeypair" {
+  key_name   = "yourname-keypair"
+  public_key = file(var.PATH_TO_PUBLIC_KEY)
+}
+
+
+# to create 2 EC2 instances
+resource "aws_instance" "my-machine" {
+  # Launch 2 servers
+  for_each = toset(var.my-servers)
+
+  ami                    = var.ami_id
+  #key_name               = var.key_name
+  key_name               = aws_key_pair.mykeypair.key_name
+  vpc_security_group_ids = [var.sg_id]
+  instance_type          = var.ins_type
+
+  # Read from the list my-servers to name each server
+  tags = {
+    Name = each.key
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo [${each.key}] >> /etc/ansible/hosts
+      echo ${self.public_ip} >> /etc/ansible/hosts
+    EOT
+  }
+}
+ubuntu@CICDLab:~/devops-labs$
+
+
+ubuntu@CICDLab:~/devops-labs$ cat variables.tf
+variable "region" {
+  default = "us-east-1"
+}
+
+# Change the SG ID. You can use the same SG ID used for your CICD anchor server
+# Basically the SG should open ports 22, 80, 8080, 9999, and 4243
+variable "sg_id" {
+  default = "sg-07d42a9b8e4d7f966" # us-east-1
+}
+
+# Choose a free tier Ubuntu AMI. You can use below.
+variable "ami_id" {
+  default = "ami-04505e74c0741db8d" # us-east-1; Ubuntu
+}
+
+# We are only using t2.micro for this lab
+variable "ins_type" {
+  default = "t2.micro"
+}
+/*
+# Replace 'yourname' with your first name
+variable "key_name" {
+  default = "YourName1-Jenkins-Docker-KeyPair"
+}
+
+variable "public_key" {
+  default = "/home/ubuntu/.ssh/id_rsa.pub" #Ubuntu OS
+}
+*/
+
+variable "PATH_TO_PUBLIC_KEY" {
+  default = "mykey.pub"
+}
+
+variable "my-servers" {
+  type    = list(string)
+  default = ["jenkins-server", "docker-server"]
+}
+ubuntu@CICDLab:~/devops-labs$
+
