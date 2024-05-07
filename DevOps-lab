@@ -31,24 +31,17 @@ Task 2: Install AWS CLI and Ansible
 ===================================
 sudo apt-get install python3-pip -y
 sudo pip3 install awscli boto boto3 ansible 
-===============================
-below command is only for ubuntu 24.. version
-sudo apt install python3.12-venv
-   32  sudo python3 -m venv myenv
-   33  source myenv/bin/activate
-   34  pip install awscli boto boto3 ansible
-============================
-aws configure
+aws configure         # will ask access and secreate key 
+Example:
 Access Key ID:
 Secret Access Key:
 
 # If you need to create new credentials, Follow below steps
-Go to aws console. On top right corner, click on your name or aws profile id. 
-when the menu opens, click on Security Credentials
-Under AWS IAM Credntials, click on Create access key. If you already have 2 active keys, 
-you can deactivate and delete the older one so that you can create a new key
-
-Complete aws configure step
+#Go to aws console. On top right corner, click on your name or aws profile id. 
+#when the menu opens, click on Security Credentials
+#Under AWS IAM Credntials, click on Create access key. If you already have 2 active keys, 
+#you can deactivate and delete the older one so that you can create a new key
+#Complete aws configure step
 
 # do smoke test to check if your credentials are valid
 aws s3 ls
@@ -68,25 +61,21 @@ Task 3: Use terraform to launch 2 servers.
 mkdir devops-labs && cd devops-labs
 
 # As a first step, create a key using ssh-keygen.
-ssh-keygen -t rsa -b 2048 
+ssh-keygen -f mykey
 
-# This will create id_rsa and id_rsa.pub in /home/ubuntu/.ssh/
-# Keep the path as /home/ubuntu/.ssh/id_rsa; don't set up any passphrase
 # Basically just hit 'Enter' key for the 3 questions it asks
-
 # Now prepare the terraform config files.
-vi DevOpsServers.tf
-
-# Type the below code into DevOpsServers.tf
+vi DevOpsServers.tf         # add the following content in the file.
 
 provider "aws" {
   region = var.region
 }
 
 resource "aws_key_pair" "mykeypair" {
-  key_name   = var.key_name
-  public_key = file(var.public_key)
+  key_name   = "yourname-keypair"
+  public_key = file(var.PATH_TO_PUBLIC_KEY)
 }
+
 
 # to create 2 EC2 instances
 resource "aws_instance" "my-machine" {
@@ -94,7 +83,7 @@ resource "aws_instance" "my-machine" {
   for_each = toset(var.my-servers)
 
   ami                    = var.ami_id
-  key_name               = var.key_name
+  key_name               = aws_key_pair.mykeypair.key_name
   vpc_security_group_ids = [var.sg_id]
   instance_type          = var.ins_type
 
@@ -111,41 +100,33 @@ resource "aws_instance" "my-machine" {
   }
 }
 
-
-
+# save the ablove file :wq -enter
 # Now, create the variables file with all variables to be used in the main config file.
 
 vi variables.tf
 
-# Add following contents into variables.tf. Please update the keyname and sg_id below.
-
 variable "region" {
-    default = "us-east-1"
+  default = "us-east-1"
 }
 
-# Change the SG ID. You can use the same SG id used for your CICD anchor server
-# Basically the SG should open ports 22, 80, 8080, 9999 and 4243
-variable  "sg_id" {
-    default = "sg-06dc8863d3ed3d280" # us-east-1
+# Change the SG ID. You can use the same SG ID used for your CICD anchor server
+# Basically the SG should open ports 22, 80, 8080, 9999, and 4243
+variable "sg_id" {
+  default = "sg-07d42a9b8e4d7f966" # us-east-1
 }
 
-# Choose a free tier Ubuntu AMI. You can use below. 
+# Choose a free tier Ubuntu AMI. You can use below.
 variable "ami_id" {
-    default = "ami-04505e74c0741db8d" # us-east-1; Ubuntu
+  default = "ami-04505e74c0741db8d" # us-east-1; Ubuntu
 }
 
 # We are only using t2.micro for this lab
 variable "ins_type" {
-    default = "t2.micro"
+  default = "t2.micro"
 }
 
-# Replace 'yourname' with your first name
-variable key_name {
-    default = "yourname-CICDlab-key-pair"
-}
-
-variable public_key {
-    default = "/home/ubuntu/.ssh/id_rsa.pub"   #Ubuntu OS
+variable "PATH_TO_PUBLIC_KEY" {
+  default = "mykey.pub"
 }
 
 variable "my-servers" {
@@ -153,6 +134,7 @@ variable "my-servers" {
   default = ["jenkins-server", "docker-server"]
 }
 
+# save the file :wq -enter
 # Edit the security group id and keyname in variables.tf
 
 # Now, execute the terraform config files to launch the servers
@@ -165,20 +147,17 @@ terraform apply -auto-approve
 
 # After the terraform code is executed, check hosts inventory file and ensure below output (sample)
 sudo vi /etc/ansible/hosts
-It will show ip addresses of jenkins server and docker server as below.
+# It will show ip addresses of jenkins server and docker server as below 
+# add the ansible private key as belwo.
+# example: add the keypaid path also
 
-[jenkins-server]
-44.202.164.153
-[docker-server]
-34.203.249.54
-example: add the keypaid path also
 [docker-server]
 54.209.238.152    ansible_ssh_private_key_file=/home/ubuntu/devops-labs/mykey
 [jenkins-server]
 34.228.155.75     ansible_ssh_private_key_file=/home/ubuntu/devops-labs/mykey
 
 
-
+#save the file :wq  -enter
 # Now ssh into docker-server & jenkins-server and check they are accessible
 ssh ubuntu@<Jenkins ip address>
 # Set the hostname
