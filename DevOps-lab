@@ -180,7 +180,7 @@ wget https://devops-e-e.s3.ap-south-1.amazonaws.com/DevOpsSetup.yml
 
 # Now, run the above playbook to deploy the packages
 #ansible-playbook DevOpsSetup.yml
-ansible all -m ping
+ansible all -m ping   # type yes and enter again type yes enter
 ansible-playbook DevOpsSetup.yml
 
 # At the end of this step, the docker-server and jenkins-server will be ready for the 
