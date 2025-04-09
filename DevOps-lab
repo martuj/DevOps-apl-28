@@ -19,8 +19,8 @@ type bash
 sudo apt update
 sudo apt install wget unzip -y
 
-wget  https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
-unzip terraform_1.6.6_linux_amd64.zip
+wget https://releases.hashicorp.com/terraform/1.11.3/terraform_1.11.3_linux_amd64.zip
+unzip terraform_1.11.3_linux_amd64.zip
 
 ls
 sudo mv terraform /usr/local/bin
@@ -177,6 +177,7 @@ mkdir ansible && cd ansible
 #wget https://devopstrng.s3.amazonaws.com/DevOpsSetup.yml
 
 wget https://devops-e-e.s3.ap-south-1.amazonaws.com/DevOpsSetup.yml
+
 
 # Now, run the above playbook to deploy the packages
 #ansible-playbook DevOpsSetup.yml
