@@ -61,7 +61,7 @@ Task 3: Use terraform to launch 2 servers.
 mkdir devops-labs && cd devops-labs
 
 # As a first step, create a key using ssh-keygen.
-ssh-keygen -f mykey
+ssh-keygen -t rsa -b 2048 
 
 # Basically just hit 'Enter' key for the 3 questions it asks
 # Now prepare the terraform config files.
@@ -72,10 +72,9 @@ provider "aws" {
 }
 
 resource "aws_key_pair" "mykeypair" {
-  key_name   = "yourname-keypair"
-  public_key = file(var.PATH_TO_PUBLIC_KEY)
+  key_name   = var.key_name
+  public_key = file(var.public_key)
 }
-
 
 # to create 2 EC2 instances
 resource "aws_instance" "my-machine" {
@@ -83,7 +82,7 @@ resource "aws_instance" "my-machine" {
   for_each = toset(var.my-servers)
 
   ami                    = var.ami_id
-  key_name               = aws_key_pair.mykeypair.key_name
+  key_name               = var.key_name
   vpc_security_group_ids = [var.sg_id]
   instance_type          = var.ins_type
 
@@ -99,6 +98,7 @@ resource "aws_instance" "my-machine" {
     EOT
   }
 }
+
 
 # save the ablove file :wq -enter
 # Now, create the variables file with all variables to be used in the main config file.
@@ -125,8 +125,13 @@ variable "ins_type" {
   default = "t2.micro"
 }
 
-variable "PATH_TO_PUBLIC_KEY" {
-  default = "mykey.pub"
+# Replace 'yourname' with your first name
+variable "key_name" {
+  default = "test-CICDlab-KeyPair"
+}
+
+variable "public_key" {
+  default = "/home/ubuntu/.ssh/id_rsa.pub" #Ubuntu OS
 }
 
 variable "my-servers" {
